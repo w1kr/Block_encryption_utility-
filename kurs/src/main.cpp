@@ -7,58 +7,13 @@
 #include "rw_file.hpp"
 #include "magma.hpp"
 
+#include "test_vectors.hpp"
+#include "benchmark.hpp"
+#include "crypto_resistance.hpp"
 
-// --- test for rw_file.cpp ---
-/* int test_IO(int argc, char* argv[])
-{
-    if (argc != 3) {
-        std::cout << "Err: number of arguments != 3" << std::endl;
-        std::cerr << "Usage: " << argv[0] << " <input_file> <output_file>\n";
-        return 1;
-    }
-
-    try 
-    {
-        std::ifstream in(argv[1], std::ios::binary);
-        if (!in) { throw std::runtime_error("Err: can't pin' input file"); }
-
-        std::ofstream out(argv[2], std::ios::binary);
-        if (!out) { throw std::runtime_error("Err: can't pin' output file"); }
-
-        const size_t BLOCK_SIZE = 8;
-        uint8_t block[BLOCK_SIZE];
-        size_t block_count = 0;
-        size_t total_bytes = 0;
-
-        while (size_t bytes = read_block(in, block, BLOCK_SIZE)){
-            ++block_count;
-            total_bytes += bytes;
-
-            std::cout << "Block " << block_count << ": read " << bytes << " bytes" << std::endl;
-
-
-
-            out.write(reinterpret_cast<const char*>(block), bytes);
-            if (!out) { throw std::runtime_error("Err: write to file"); }
-        } 
-
-        std::cout << "--------------------------------\n";
-        std::cout << "Total blocks: " << block_count << "\n";
-        std::cout << "Total bytes copied: " << total_bytes << "\n";
-
-        in.close();
-        out.close();
-    }
-    catch (const std::exception& e){
-        std::cerr << "Err: " << e.what() << std::endl;
-        return 1;
-    }
-    
-    return 0;
-} */
 
 // --- Parsing key ---
-static bool parse_key(const std::string& hex_key, uint32_t key[8])
+extern bool parse_key(const std::string& hex_key, uint32_t key[8])
 {
     if (hex_key.size() != 64){
         std::cerr << "Err: key must be 64 hex characters (bytes)\n";
@@ -88,6 +43,7 @@ static bool parse_key(const std::string& hex_key, uint32_t key[8])
 
     return true;
 }
+
 
 // --- Main function ---
 int main_app(int argc, char* argv[])
@@ -193,10 +149,29 @@ int main_app(int argc, char* argv[])
     return 0;
 }
 
+
+bool run_known_answer_tests();
+void run_boundary_tests();
+
 // --- main ---
 int main(int argc, char* argv[], char* envp[])
 {
-    int r = main_app(argc, argv);
-    
-    return r;
+    if (std::string(argv[1]) == "test") {
+        bool kat_ok = run_known_answer_tests();
+        run_boundary_tests();
+        return kat_ok ? 0 : 1;
+    }
+
+    else if (std::string(argv[1]) == "benchmark") {
+        run_benchmark();
+        return 0;        
+    }
+
+    else if (std::string(argv[1]) == "resistance") {
+        run_avalanche_test();
+        run_statistical_tests();
+        return 0;
+    }
+
+    return main_app(argc, argv);
 }
