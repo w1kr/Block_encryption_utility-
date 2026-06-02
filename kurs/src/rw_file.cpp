@@ -9,6 +9,13 @@ size_t read_block(std::ifstream& in, uint8_t* buffer, size_t block_size)
     return static_cast<size_t>(bytes);
 }
 
+// --- Write block ---
+void write_block(std::ofstream& out, const uint8_t* buffer, size_t block_size)
+{
+    out.write(reinterpret_cast<const char*>(buffer), block_size);
+    if (!out) { throw std::runtime_error("write to file"); }
+}
+
 // --- Add supplement to block ---
 void apply_padding(uint8_t* block, size_t valid_bytes, size_t block_size)
 {
@@ -16,13 +23,6 @@ void apply_padding(uint8_t* block, size_t valid_bytes, size_t block_size)
     for (size_t i = valid_bytes; i < block_size; ++i) {
         block[i] = pad_value;
     }
-}
-
-// --- Write block ---
-void write_block(std::ofstream& out, const uint8_t* buffer, size_t block_size)
-{
-    out.write(reinterpret_cast<const char*>(buffer), block_size);
-    if (!out) { throw std::runtime_error("write to file"); }
 }
 
 // --- Remove supplement to block ---

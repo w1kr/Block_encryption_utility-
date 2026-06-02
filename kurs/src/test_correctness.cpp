@@ -1,10 +1,11 @@
 #include "magma.hpp"
 #include "rw_file.hpp"
 #include "test_vectors.hpp"
+#include "test_correctness.hpp"
+
 #include <iostream>
 #include <iomanip>
 #include <cstring>
-
 
 // transformation raw key
 static void raw_key_to_u32(const uint8_t raw[32], uint32_t key[8]) 
@@ -17,10 +18,8 @@ static void raw_key_to_u32(const uint8_t raw[32], uint32_t key[8])
     }
 }
 
-
 // compare function
 static bool compare_blocks(const uint8_t* a, const uint8_t* b) { return memcmp(a, b, 8) == 0; }
-
 
 // known answer tests
 bool run_known_answer_tests() {
@@ -55,7 +54,6 @@ bool run_known_answer_tests() {
     std::cout << "==================================\n";
     return all_passed;
 }
-
 
 // boundary tests (empty, 1 byte, 8 bytes, 17 bytes, 64 - 1 Kbytes)
 void run_boundary_tests()
@@ -143,7 +141,9 @@ void run_boundary_tests()
                 size_t bytes = read_block(in, block, 8);
                 if (bytes == 0) break;
                 if (bytes != 8) throw std::runtime_error("corrupted");
+
                 decrypt_block(block, block, key);
+                
                 if (has_prev) {
                     out.write(reinterpret_cast<const char*>(prev), 8);
                 }
@@ -161,9 +161,11 @@ void run_boundary_tests()
             std::ifstream orig(in_name, std::ios::binary);
             std::ifstream dec(dec_name, std::ios::binary);
             char a, b;
+
             while (orig.get(a) && dec.get(b)) {
                 if (a != b) { ok = false; break; }
             }
+            
             if (orig.get(a) || dec.get(b)) ok = false;
         }
 

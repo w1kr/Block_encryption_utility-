@@ -4,16 +4,17 @@
 #include <iomanip>
 #include <stdexcept>
 
+#include "parse_key.hpp"
 #include "rw_file.hpp"
 #include "magma.hpp"
-
 #include "test_vectors.hpp"
+#include "test_correctness.hpp"
 #include "benchmark.hpp"
 #include "crypto_resistance.hpp"
 
 
 // --- Parsing key ---
-extern bool parse_key(const std::string& hex_key, uint32_t key[8])
+bool parse_key(const std::string& hex_key, uint32_t key[8])
 {
     if (hex_key.size() != 64){
         std::cerr << "Err: key must be 64 hex characters (bytes)\n";
@@ -23,7 +24,6 @@ extern bool parse_key(const std::string& hex_key, uint32_t key[8])
     uint8_t key_bytes[32];
     for (size_t i = 0; i < 32; ++i){
         std::string byte_str = hex_key.substr(i * 2, 2);
-        
         char* end;
         long val = std::strtol(byte_str.c_str(), &end, 16);
         
@@ -78,7 +78,6 @@ int main_app(int argc, char* argv[])
 
         std::ofstream out(out_path, std::iostream::binary);
         if (!out) throw std::runtime_error("Cannot open output file: " + out_path);
-
 
         const size_t BLOCK_SIZE = 8;
         uint8_t block[BLOCK_SIZE];
@@ -150,16 +149,13 @@ int main_app(int argc, char* argv[])
 }
 
 
-bool run_known_answer_tests();
-void run_boundary_tests();
-
 // --- main ---
 int main(int argc, char* argv[], char* envp[])
 {
     if (std::string(argv[1]) == "test") {
-        bool kat_ok = run_known_answer_tests();
+        bool is_ok = run_known_answer_tests();
         run_boundary_tests();
-        return kat_ok ? 0 : 1;
+        return is_ok ? 0 : 1;
     }
 
     else if (std::string(argv[1]) == "benchmark") {

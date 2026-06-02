@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/App.dir/link.d CMakeFiles/App.dir/src/magma.cpp.o CMakeFiles/App.dir/src/rw_file.cpp.o CMakeFiles/App.dir/src/main.cpp.o CMakeFiles/App.dir/src/test_correctness.cpp.o CMakeFiles/App.dir/src/benchmark.cpp.o CMakeFiles/App.dir/src/crypto_resistance.cpp.o -o App

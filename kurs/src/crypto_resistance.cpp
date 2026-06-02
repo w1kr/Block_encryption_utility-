@@ -12,7 +12,7 @@
     The function calculates the number of 
     different bits between two blocks.
 */
-int hamming_distance(const uint8_t* a, const uint8_t* b) 
+int hamming_distance(const uint8_t* a, const uint8_t* b)
 {
     int dist = 0;
     for (int i = 0; i < 8; ++i) {
@@ -26,7 +26,6 @@ int hamming_distance(const uint8_t* a, const uint8_t* b)
     return dist;
 }
 
-
 //  Convert 64-bit integer (little-endian) to byte array
 void uint64_to_bytes(uint64_t val, uint8_t out[8]) 
 {
@@ -36,7 +35,6 @@ void uint64_to_bytes(uint64_t val, uint8_t out[8])
     }
 }
 
-
 //  Convert a byte array to a 64-bit integer (little-endian)
 uint64_t bytes_to_uint64(const uint8_t in[8]) 
 {
@@ -44,7 +42,6 @@ uint64_t bytes_to_uint64(const uint8_t in[8])
     for (int i = 7; i >= 0; --i) { val = (val << 8) | in[i]; }
     return val;
 }
-
 
 //  Avalanche test
 void run_avalanche_test() 
@@ -75,8 +72,10 @@ void run_avalanche_test()
         encrypt_block(mod_plain, cipher_mod, key);
         int dist = hamming_distance(cipher_ref, cipher_mod);
         total_dist_plain += dist;
-        if (bit < 10 || bit % 8 == 0)
+        
+        if (bit < 10 || bit % 8 == 0) {
             std::cout << "  bit " << std::setw(2) << bit << ": " << dist << " / 64\n";
+        }
     }
     double avg_plain = total_dist_plain / 64.0;
     std::cout << "Average changed bits (plaintext): " << std::fixed << std::setprecision(2)
@@ -122,8 +121,7 @@ void run_avalanche_test()
               << "Avalanche test complete. Ideal average is 50%.\n\n";
 }
 
-
-//  Statistical randomness Tests
+//  Statistical randomness tests
 void run_statistical_tests() 
 {
     std::cout << "=== Statistical Randomness Tests ===\n";

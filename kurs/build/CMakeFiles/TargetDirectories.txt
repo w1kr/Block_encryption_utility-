@@ -1,0 +1,3 @@
+/home/wlkr/Desktop/work/projects/kurs/build/CMakeFiles/App.dir
+/home/wlkr/Desktop/work/projects/kurs/build/CMakeFiles/edit_cache.dir
+/home/wlkr/Desktop/work/projects/kurs/build/CMakeFiles/rebuild_cache.dir

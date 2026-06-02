@@ -33,10 +33,9 @@ static double measure_operation(
 
     auto end = std::chrono::high_resolution_clock::now();
     double seconds = std::chrono::duration<double>(end - start).count();
-    // Speed
+
     return (data_size * iterations) / (seconds * 1024 * 1024);
 }
-
 
 // main benchmark function
 void run_benchmark() 
@@ -60,7 +59,6 @@ void run_benchmark()
     std::cout << std::string(14 + 15 + 18, '-') << "\n";
 
     for (auto data_size : sizes) {
-        // Generate data
         std::vector<uint8_t> data(data_size);
         for (size_t i = 0; i < data_size; ++i)
             data[i] = static_cast<uint8_t>(rand() & 0xFF);
@@ -79,6 +77,5 @@ void run_benchmark()
                   << std::setw(15) << enc_speed
                   << std::setw(18) << dec_speed << "\n";
     }
-
     std::cout << "================================================\n";
 }

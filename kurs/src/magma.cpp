@@ -13,8 +13,8 @@ static const uint8_t sbox[8][16] =
     {1,7,14,13,0,5,8,3,4,15,10,6,9,12,11,2}
 };
 
-// --- Main step of encryption ---
-static uint32_t f(uint32_t block, uint32_t key) 
+// --- Main step of encryption f ---
+static uint32_t f(uint32_t block, uint32_t key)
 {
     uint32_t temp = block + key;
     uint32_t result = 0;
@@ -31,7 +31,7 @@ static uint32_t f(uint32_t block, uint32_t key)
 }
 
 // --- loading 32-bit words in Little-Endian ---
-static uint32_t load_le(const uint8_t* p) 
+static uint32_t load_le(const uint8_t* p)
 {
     return static_cast<uint32_t>(p[0]) |
           (static_cast<uint32_t>(p[1]) << 8) |
@@ -40,7 +40,7 @@ static uint32_t load_le(const uint8_t* p)
 }
 
 // --- Saving 32-bit words in Little-Endian ---
-static void store_le(uint32_t v, uint8_t* p) 
+static void store_le(uint32_t v, uint8_t* p)
 {
     p[0] =  v & 0xFF;
     p[1] = (v >> 8) & 0xFF;
@@ -61,7 +61,6 @@ void encrypt_block(const uint8_t* in, uint8_t* out, const uint32_t* key)
         else            { rk = key[7 - (round % 8)]; }
 
         uint32_t temp = n2 ^ f(n1, rk);
-        
         if (round < 31) {
             n2 = n1;
             n1 = temp;
@@ -86,14 +85,11 @@ void decrypt_block(const uint8_t* in, uint8_t* out, const uint32_t* key)
         else           { rk = key[7 - (round % 8)]; }
 
         uint32_t temp = n2 ^ f(n1, rk);
-        
         if (round < 31) {
             n2 = n1;
             n1 = temp;
         } 
-        else {
-            n2 = temp;
-        }
+        else { n2 = temp; }
     }
 
     store_le(n1, out);

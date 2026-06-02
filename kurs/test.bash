@@ -14,10 +14,10 @@ cmake --build .
 
 
 # Correctness test
-#./App test
+# ./App test
 
 # Benchmark
-#./App benchmark
+# ./App benchmark
 
 # Crypto resistance
 ./App resistance
